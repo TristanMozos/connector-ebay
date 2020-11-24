@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_ebay_backend_tree" model="ir.ui.view">
+        <field name="name">eBay backend</field>
+        <field name="model">ebay.backend</field>
+        <field name="arch" type="xml">
+            <tree string="eBay Backend">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="dev_id"/>
+                <field name="token_valid_until"/>
+                <field name="sale_prefix"/>
+                <field name="warehouse_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_ebay_backend_form" model="ir.ui.view">
+        <field name="name">ebay.backend.form</field>
+        <field name="model">ebay.backend</field>
+        <field name="arch" type="xml">
+            <form>
+                <group><field name="name"/></group>
+                <group><field name="client_id"/></group>
+                <group><field name="dev_id"/></group>
+                <group><field name="client_secret" password="True"/></group>
+                <group><field name="token" password="True"/></group>
+                <group><field name="token_valid_until"/></group>
+                <group><field name="no_sales_order_sync"/></group>
+                <group><field name="stock_sync"/></group>
+                <group><field name="sale_prefix"/></group>
+                <group><field name="import_sales_from_date"/></group>
+                <group><field name="import_updated_sales_from_date"/></group>
+                <group><field name="warehouse_id"/></group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ebay_backend" model="ir.actions.act_window">
+        <field name="name">eBay Backends</field>
+        <field name="res_model">ebay.backend</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_ebay_backend_tree"/>
+    </record>
+
+</odoo>

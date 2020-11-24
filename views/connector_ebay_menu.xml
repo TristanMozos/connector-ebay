@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- eBay Menu -->
+    <menuitem id="menu_ebay_root"
+              parent="connector.menu_connector_root"
+              name="eBay"
+              sequence="10"
+              groups="connector_ebay.group_connector_ebay_manager"/>
+
+    <!-- Backends submenu -->
+    <menuitem id="menu_ebay_backend"
+              name="Backends"
+              parent="menu_ebay_root"
+              action="action_ebay_backend"/>
+
+    <!-- Products submenu >
+    <menuitem id="menu_ebay_products"
+        parent="menu_ebay_root"
+        name="Products"
+        sequence="30"/>
+
+    <menuitem id="menu_ebay_products_on_ebay"
+        parent="menu_ebay_products"
+        name="Products on ebay"
+        action="action_ebay_product"/>
+
+    <menuitem id="menu_ebay_products_market"
+        parent="menu_ebay_products"
+        name="Products marketplace data"
+        action="action_ebay_product_marketplace"/>
+
+    <menuitem id="menu_ebay_export_products"
+        parent="menu_ebay_products"
+        name="Export products to ebay"
+        action="action_view_wizard_ebay_export_product"/ -->
+
+
+    <!-- Orders submenu >
+    <menuitem id="menu_ebay_orders"
+        name="Orders"
+        parent="menu_ebay_root"
+        action="action_ebay_order"/>
+
+    <menuitem id="menu_ebay_partners"
+        name="Partners"
+        parent="menu_ebay_root"
+        action="action_ebay_partner"/-->
+
+    <!-- Returns submenu >
+    <menuitem id="menu_ebay_returns"
+        name="Returns"
+        parent="menu_ebay_root"
+        action="action_ebay_return"/-->
+
+</odoo>

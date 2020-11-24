@@ -1,0 +1,3 @@
+id                         ,name                         ,model_id:id                      ,group_id:id                                ,perm_read,perm_write,perm_create,perm_unlink
+access_ebay_backend_user   ,connector_ebay.config.user   ,connector_ebay.model_ebay_backend,connector_ebay.group_connector_ebay_user   ,1        ,0         ,0          ,0
+access_ebay_backend_manager,connector_ebay.config.manager,connector_ebay.model_ebay_backend,connector_ebay.group_connector_ebay_manager,1        ,1         ,1          ,1
