@@ -1,11 +1,26 @@
 # -*- coding: utf-8 -*-
-# Copyright 2019 Halltic eSolutions S.L.
-# © 2019 Halltic eSolutions S.L.
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+##############################################################################
+#
+#    Odoo, Open Source Management Solution
+#    Copyright (C) 2021 Halltic Tech S.L. (https://www.halltic.com)
+#                  Tristán Mozos <tristan.mozos@halltic.com>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 
 from odoo import api, models, fields
-from odoo.addons.queue_job.exception import FailedJobError, RetryableJobError
-from odoo.addons.queue_job.job import job, related_action
 
 
 class EbayBinding(models.AbstractModel):
@@ -34,7 +49,6 @@ class EbayBinding(models.AbstractModel):
          'A binding already exists with the same eBay ID.'),
     ]
 
-    @job(default_channel='root.ebay')
     @api.model
     def import_batch(self, backend, filters=None):
         """ Prepare the import of records modified on eBay """
@@ -48,7 +62,6 @@ class EbayBinding(models.AbstractModel):
         except Exception as e:
             return e
 
-    @job(default_channel='root.ebay')
     @api.model
     def export_batch(self, backend, filters=None):
         """ Prepare the export of records on eBay """
@@ -61,7 +74,6 @@ class EbayBinding(models.AbstractModel):
         except Exception as e:
             return e
 
-    @job(default_channel='root.ebay')
     @api.model
     def import_record(self, backend, external_id, force=False):
         """ Import a eBay record """
@@ -72,8 +84,6 @@ class EbayBinding(models.AbstractModel):
         except Exception as e:
             return e
 
-    @job(default_channel='root.ebay')
-    @api.multi
     def export_record(self, fields=None):
         """ Export a record on eBay """
         self.ensure_one()

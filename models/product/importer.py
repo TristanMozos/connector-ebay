@@ -1,10 +1,27 @@
 # -*- coding: utf-8 -*-
-# Copyright 2018 Halltic eSolutions S.L.
-# © 2018 Halltic eSolutions S.L.
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+##############################################################################
+#
+#    Odoo, Open Source Management Solution
+#    Copyright (C) 2021 Halltic Tech S.L. (https://www.halltic.com)
+#                  Tristán Mozos <tristan.mozos@halltic.com>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 
 import logging
-import urllib2
+import urllib
 import base64
 
 from odoo import _
@@ -54,12 +71,12 @@ class ProductImporter(Component):
         if self.ebay_record:
             return self.ebay_record
 
-    def _get_binary_image(self, image_url):
-        url = image_url.encode('utf8')
+    def _get_binary_image(self, image_data):
+        url = image_data['src']
         try:
-            request = urllib2.Request(url)
-            binary = urllib2.urlopen(request)
-        except urllib2.HTTPError as err:
+            request = urllib.request.Request(url)
+            binary = urllib.request.urlopen(request)
+        except urllib.error.HTTPError as err:
             if err.code == 404:
                 # the image is just missing, we skip it
                 return

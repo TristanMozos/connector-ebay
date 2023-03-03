@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Odoo, Open Source Management Solution
-#    Copyright (C) 2020 Halltic eSolutions (https://www.halltic.com)
+#    Copyright (C) 2021 Halltic Tech S.L. (https://www.halltic.com)
 #                  Tristán Mozos <tristan.mozos@halltic.com>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@
         eBay module for integration of your eBay account on odoo
     """,
 
-    'author':"Halltic eSolutions S.L.",
+    'author':"Halltic Tech S.L.",
     'website':"https://www.halltic.com",
 
     # Categories can be used to filter modules in modules listing
@@ -45,7 +45,7 @@
     # always loaded
     'data':[
         'security/connector_security.xml',
-        #'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/ebay_backend_views.xml',
         'views/connector_ebay_menu.xml',
         'data/ebay_scheduler.xml',

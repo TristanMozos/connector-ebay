@@ -1,94 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-	<data>
-	
-		<!-- GENERAL -->
-		
-		<!-- eBay sales team to crm -->
-		<record id="ebay_crm_team" model='crm.team'>
+    <data>
+
+        <!-- GENERAL -->
+
+        <!-- eBay channel -->
+        <record id="channel_ebay" model="queue.job.channel">
+            <field name="name">ebay</field>
+            <field name="parent_id" ref="queue_job.channel_root"/>
+        </record>
+
+        <!-- eBay sales team to crm -->
+        <record id="ebay_crm_team" model='crm.team'>
             <field name="name">eBay Sales</field>
             <field name="active">true</field>
-			<field name="use_quotations">true</field>
+            <field name="use_quotations">true</field>
         </record>
-		
-		<!-- ORDERS -->	
-	
-		<!-- eBay orders status -->
-		
-		<!-- This value indicates that the cart is active. The 'Active' state is the only order state in which order line items can still be added, removed, or updated in the cart. -->
-		<record id="ebay_order_status_active" model='ebay.order.status'>
-            <field name="name">Active</field>
-            <field name="sequence">10</field>
-        </record>
-		
-		<!-- This value indicates that the cart was authenticated. -->
-		<record id="ebay_order_status_authenticated" model='ebay.order.status'>
-            <field name="name">Authenticated</field>
-            <field name="sequence">20</field>
-        </record>
-		
-		<!-- This value indicates that the cart was cancelled. -->
-		<record id="ebay_order_status_cancelled" model='ebay.order.status'>
-            <field name="name">Cancelled</field>
-            <field name="sequence">30</field>
-        </record>
-		
-		<!-- This value indicates that a buyer has initiated a cancellation request on the order. If a seller sees an order in this state, that seller must either approve or reject the cancellation request through My eBay Web flows or through the Post-Order API cancellation calls. -->
-		<record id="ebay_order_status_cancelpending" model='ebay.order.status'>
-            <field name="name">CancelPending</field>
-            <field name="sequence">40</field>
-        </record>
-		
-		<!-- This value indicates that the order is completed. -->
-		<record id="ebay_order_status_completed" model='ebay.order.status'>
-            <field name="name">Completed</field>
-            <field name="sequence">50</field>
-        </record>
-		
-		<!-- This value indicates that the order is in default status. -->
-		<record id="ebay_order_status_default" model='ebay.order.status'>
-            <field name="name">Default</field>
-            <field name="sequence">60</field>
-        </record>
-        
-        <!-- This value indicates that the cart is inactive. -->
-        <record id="ebay_order_status_inactive" model='ebay.order.status'>
-            <field name="name">Inactive</field>
-            <field name="sequence">60</field>
-        </record>
-        
-        <!-- This value indicates that processing of the buyer's cart has been initiated, but is not yet complete. -->
-        <record id="ebay_order_status_inprocess" model='ebay.order.status'>
-            <field name="name">InProcess</field>
-            <field name="sequence">60</field>
-        </record>
-        
-        <!-- This value indicates that the cart is invalid, or no longer exists. -->
-        <record id="ebay_order_status_invalid" model='ebay.order.status'>
-            <field name="name">Invalid</field>
-            <field name="sequence">60</field>
-        </record>
-        
-        
-        <!-- eBay orders checkout status -->
-		
-		<!-- This value indicates that the order or order line item is complete. Generally speaking, an order or order line item is complete when payment from the buyer has been initiated and has been processed. -->
-		<record id="ebay_order_checkout_status_complete" model='ebay.order.checkout.status'>
-            <field name="name">Complete</field>
-            <field name="sequence">10</field>
-        </record>
-		
-		<!-- This value indicates that the order or order line item is in the incomplete state. Generally speaking, an order or order line item is considered incomplete when payment from the buyer has yet to be initiated. -->
-		<record id="ebay_order_checkout_status_incomplete" model='ebay.order.checkout.status'>
-            <field name="name">Incomplete</field>
-            <field name="sequence">20</field>
-        </record>
-		
-		<!-- This value indicates that the order or order line item is in the pending state. Generally speaking, an order is considered pending when payment from the buyer has been initiated but has yet to be fully processed.  -->
-		<record id="ebay_order_status_pending" model='ebay.order.checkout.status'>
-            <field name="name">Pending</field>
-            <field name="sequence">30</field>
-        </record>
-		
-	</data>	
+
+    </data>
 </odoo>

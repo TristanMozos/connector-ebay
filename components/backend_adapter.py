@@ -1,10 +1,26 @@
 # -*- coding: utf-8 -*-
-# Copyright 2018 Halltic eSolutions S.L.
-# © 2018 Halltic eSolutions S.L.
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+##############################################################################
+#
+#    Odoo, Open Source Management Solution
+#    Copyright (C) 2021 Halltic Tech S.L. (https://www.halltic.com)
+#                  Tristán Mozos <tristan.mozos@halltic.com>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 # This project is based on connector-magneto, developed by Camptocamp SA
 
-import StringIO
 import logging
 import dateutil.parser
 import re
@@ -16,7 +32,7 @@ from odoo.addons.component.core import AbstractComponent
 from odoo.addons.queue_job.exception import FailedJobError, RetryableJobError
 
 from ebaysdk.exception import ConnectionError
-from ebaysdk.trading import Connection as trading
+from ebaysdk.trading import Connection as Trading
 
 _logger = logging.getLogger(__name__)
 
@@ -47,7 +63,7 @@ class EbayAPI(object):
     def api(self):
         api = None
         if self.method in _EBAY_TRADING_METHOD_LIST.keys():
-            api = trading(config_file=None,
+            api = Trading(config_file=None,
                           appid=self._backend.client_id,
                           devid=self._backend.dev_id,
                           certid=self._backend.client_secret,

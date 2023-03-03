@@ -1,14 +1,30 @@
 # -*- coding: utf-8 -*-
-# Copyright 2019 Halltic eSolutions S.L.
-# © 2019 Halltic eSolutions S.L.
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+##############################################################################
+#
+#    Odoo, Open Source Management Solution
+#    Copyright (C) 2021 Halltic Tech S.L. (https://www.halltic.com)
+#                  Tristán Mozos <tristan.mozos@halltic.com>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 
 import logging
 from datetime import datetime, timedelta
 
 from decorator import contextmanager
 from odoo import models, fields, api, _
-from odoo.addons.connector.checkpoint import checkpoint
 
 from ...components.backend_adapter import EbayAPI
 
@@ -23,14 +39,21 @@ class EbayBackend(models.Model):
     _inherit = 'connector.backend'
 
     name = fields.Char('name', required=True)
-    client_id = fields.Char('clientID', required=True)
-    dev_id = fields.Char('devId', required=True)
-    client_secret = fields.Char('clientSecret', required=True)
-    token = fields.Char('token', required=True)
-    token_valid_until = fields.Datetime('tokenValidUntil', required=False)
-    is_test = fields.Boolean('Is test?')
 
-    no_sales_order_sync = fields.Boolean(string='Sync sales order', readonly=True)
+    client_id = fields.Char('clientID')
+    dev_id = fields.Char('devId')
+    client_secret = fields.Char('clientSecret')
+    token = fields.Char('token')
+    token_valid_until = fields.Datetime('tokenValidUntil')
+    automatically_get_token = fields.Boolean('Automatically get token', default=False)
+    client_id_test = fields.Char('Test clientID')
+    dev_id_test = fields.Char('Test devId')
+    client_secret_test = fields.Char('Test clientSecret')
+    token_test = fields.Char('Test token')
+    token_valid_until_test = fields.Datetime('tokenValidUntil')
+    automatically_get_test_token = fields.Boolean('Automatically get test token', default=False)
+
+    no_sales_order_sync = fields.Boolean(string='Sync sales order', default=False)
 
     stock_sync = fields.Boolean(string='Sync stock products', default=False)
 
@@ -59,6 +82,14 @@ class EbayBackend(models.Model):
         default='eby-'
     )
 
+    warehouse_id = fields.Many2one(
+        comodel_name='stock.warehouse',
+        string='Warehouse',
+        required=True,
+        help='Warehouse used to compute the '
+             'stock quantities.',
+    )
+
     company_id = fields.Many2one(
         comodel_name='res.company',
         related='warehouse_id.company_id',
@@ -68,8 +99,26 @@ class EbayBackend(models.Model):
 
     team_id = fields.Many2one(comodel_name='crm.team', string='Sales Team')
 
+    journal_id = fields.Many2one(comodel_name='account.journal', string='Journal to invoice the orders', help='Journal to invoice the orders')
+
+    invoice_order_automatically = fields.Boolean('Invoice order automatically', default=False)
+
+    cancel_order_if_cancelled_on_ebay = fields.Boolean('Cancel order if the order is cancelled on eBay')
+
+    days_passed_to_invoice_order = fields.Integer('Days passed to invoice order', default=7)
+
+    prod_environment = fields.Boolean("Environment", help="Set to True if your credentials are certified for production.")
+
+    _sql_constraints = [
+        ('sale_prefix_uniq', 'unique(sale_prefix)',
+         "A backend with the same sale prefix already exists")
+    ]
+
+    def toggle_prod_environment(self):
+        for c in self:
+            c.prod_environment = not c.prod_environment
+
     @contextmanager
-    @api.multi
     def work_on(self, model_name, **kwargs):
         self.ensure_one()
         # We create a eBay Client API here, so we can create the
@@ -83,14 +132,10 @@ class EbayBackend(models.Model):
                     model_name, ebay_api=ebay_api, **kwargs) as work:
                 yield work
 
-    @api.multi
     def _import_sale_orders(self,
                             import_start_time=None,
                             import_end_time=None,
                             update_import_date=True):
-        import wdb
-        wdb.set_trace()
-
         for backend in self:
             user = backend.warehouse_id.company_id.user_tech_id
             if not user:
@@ -120,7 +165,6 @@ class EbayBackend(models.Model):
 
         return True
 
-    @api.multi
     def _import_updated_sales(self,
                               import_start_time=None,
                               import_end_time=None,
@@ -148,6 +192,10 @@ class EbayBackend(models.Model):
             if update_import_date:
                 backend.write({'import_updated_sales_from_date':import_end_time})
 
+    def _get_token(self):
+        
+        return
+
     @api.model
     def _ebay_backend(self, callback, domain=None):
         if domain is None:
@@ -159,4 +207,7 @@ class EbayBackend(models.Model):
     @api.model
     def _scheduler_import_sale_orders(self, domain=None):
         self._ebay_backend('_import_sale_orders', domain=domain)
-        # self._ebay_backend('_import_updated_sales', domain=domain)
+
+    @api.model
+    def _scheduler_invoice_orders_automatically(self, domain=None):
+        self._ebay_backend('_invoice_orders', domain=domain)

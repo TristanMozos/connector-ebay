@@ -1,7 +1,24 @@
 # -*- coding: utf-8 -*-
-# Copyright 2018 Halltic eSolutions S.L.
-# © 2018 Halltic eSolutions S.L.
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+##############################################################################
+#
+#    Odoo, Open Source Management Solution
+#    Copyright (C) 2021 Halltic Tech S.L. (https://www.halltic.com)
+#                  Tristán Mozos <tristan.mozos@halltic.com>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 # This project is based on connector-magneto, developed by Camptocamp SA
 
 import logging
@@ -31,6 +48,7 @@ In addition to its export job, an exporter has to:
 
 """
 
+
 class BatchExporter(AbstractComponent):
     """ The role of a BatchExporter is to send a list of
     items to export, then it can either export them directly or delay
@@ -52,6 +70,7 @@ class BatchExporter(AbstractComponent):
         Method to implement in sub-classes.
         """
         raise NotImplementedError
+
 
 class EbayExporter(AbstractComponent):
     """ Base exporter for eBay """
@@ -97,7 +116,7 @@ class EbayExporter(AbstractComponent):
             return True
         sync_date = odoo.fields.Datetime.from_string(sync)
         ebay_date = datetime.strptime(record['updated_at'],
-                                        EBAY_DATETIME_FORMAT)
+                                      EBAY_DATETIME_FORMAT)
         return sync_date < ebay_date
 
     def run(self, binding, *args, **kwargs):

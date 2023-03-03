@@ -1,16 +1,30 @@
 # -*- coding: utf-8 -*-
-# Copyright 2019 Halltic eSolutions S.L.
-# © 2019 Halltic eSolutions S.L.
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+##############################################################################
+#
+#    Odoo, Open Source Management Solution
+#    Copyright (C) 2021 Halltic Tech S.L. (https://www.halltic.com)
+#                  Tristán Mozos <tristan.mozos@halltic.com>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 
 import logging
-import xmlrpclib
 
 import odoo.addons.decimal_precision as dp
 from odoo import models, fields, api, _
 from odoo.addons.component.core import Component
-from odoo.addons.connector.exception import IDMissingInBackend
-from odoo.addons.queue_job.job import job
 
 _logger = logging.getLogger(__name__)
 
@@ -62,7 +76,80 @@ class EbaySaleOrder(models.Model):
     # In ISO 8601 date time format.
     date_latest_delivery = fields.Datetime('date_latest_delivery', required=False)
 
-    @job(default_channel='root.ebay')
+    order_id = fields.Char('OrderID')
+    adjustment_amount = fields.Float(string='AdjustmentAmount')
+    adjustment_currency_id = fields.Selection(
+        [('AUD', 'Australian dollar'),
+         ('BRL', 'Brazilian real'),
+         ('CAD', 'Canadian dollar'),
+         ('CHF', 'Swiss franc'),
+         ('CNY', 'Chinese yuan'),
+         ('EUR', 'Euro'),
+         ('GBP', 'Pound sterling'),
+         ('HKD', 'Hong Kong dollar'),
+         ('INR', 'Indian rupee'),
+         ('JPY', 'Japanese yen'),
+         ('MYR', 'Malaysian ringgit'),
+         ('SGD', 'Singapore dollar'),
+         ('TWD', 'New Taiwan dollar'),
+         ('USD', 'United States dollar')],
+        string='Adjustment Currency ID'
+    )
+    amount_paid = fields.Float(string='AmountPaid')
+    amount_paid_currency_id = fields.Selection(
+        [('AUD', 'Australian dollar'),
+         ('BRL', 'Brazilian real'),
+         ('CAD', 'Canadian dollar'),
+         ('CHF', 'Swiss franc'),
+         ('CNY', 'Chinese yuan'),
+         ('EUR', 'Euro'),
+         ('GBP', 'Pound sterling'),
+         ('HKD', 'Hong Kong dollar'),
+         ('INR', 'Indian rupee'),
+         ('JPY', 'Japanese yen'),
+         ('MYR', 'Malaysian ringgit'),
+         ('SGD', 'Singapore dollar'),
+         ('TWD', 'New Taiwan dollar'),
+         ('USD', 'United States dollar')],
+        string='Amount Paid Currency ID'
+    )
+    amount_saved = fields.Float(string='AmountSaved')
+    amount_saved_currency_id = fields.Selection(
+        [('AUD', 'Australian dollar'),
+         ('BRL', 'Brazilian real'),
+         ('CAD', 'Canadian dollar'),
+         ('CHF', 'Swiss franc'),
+         ('CNY', 'Chinese yuan'),
+         ('EUR', 'Euro'),
+         ('GBP', 'Pound sterling'),
+         ('HKD', 'Hong Kong dollar'),
+         ('INR', 'Indian rupee'),
+         ('JPY', 'Japanese yen'),
+         ('MYR', 'Malaysian ringgit'),
+         ('SGD', 'Singapore dollar'),
+         ('TWD', 'New Taiwan dollar'),
+         ('USD', 'United States dollar')],
+        string='Amount Saved Currency ID'
+    )
+    buyer_checkout_message = fields.Char(string='Buyer Checkout Message')
+    buyer_package_enclosures = fields.Char(string='Buyer Package Enclosures')
+    buyer_package_enclosure_type = fields.Selection(
+        [('PaymentInstruction', 'Payment Instruction')],
+        string='Buyer Package Enclosure Type'
+    )
+    buyer_tax_identifier = fields.Char(string='Buyer Tax Identifier')
+    buyer_tax_identifier_attribute = fields.Char(
+        string='Buyer Tax Identifier Attribute'
+    )
+    buyer_tax_identifier_attribute_name = fields.Selection(
+        [('IssuingCountry', 'Issuing Country'),
+         ('IDType', 'ID Type'),
+         ('IDValue', 'ID Value'),
+         ('IDExpirationDate', 'ID Expiration Date')],
+        string='Buyer Tax Identifier Attribute Name'
+    )
+    buyer_tax_identifier_id = fields.Char(string='Buyer Tax Identifier ID')
+    
     @api.model
     def import_record(self, backend, external_id):
         _super = super(EbaySaleOrder, self)
@@ -102,7 +189,6 @@ class SaleOrder(models.Model):
                     description=job_descr
                 ).export_state_change(allowed_states=['cancel'])
 
-    @api.multi
     def write(self, vals):
         if vals.get('state') == 'cancel':
             self._ebay_cancel()
@@ -125,7 +211,6 @@ class SaleOrder(models.Model):
                 description=job_descr
             ).export_state_change()
 
-    @api.multi
     def copy(self, default=None):
         self_copy = self.with_context(__copy_from_quotation=True)
         new = super(SaleOrder, self_copy).copy(default=default)
@@ -215,7 +300,6 @@ class SaleOrderLine(models.Model):
                 bindings.write({'odoo_id':new_line.id})
         return new_line
 
-    @api.multi
     def copy_data(self, default=None):
         data = super(SaleOrderLine, self).copy_data(default=default)[0]
         if self.env.context.get('__copy_from_quotation'):

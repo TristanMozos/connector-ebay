@@ -21,18 +21,84 @@
         <field name="model">ebay.backend</field>
         <field name="arch" type="xml">
             <form>
-                <group><field name="name"/></group>
-                <group><field name="client_id"/></group>
-                <group><field name="dev_id"/></group>
-                <group><field name="client_secret" password="True"/></group>
-                <group><field name="token" password="True"/></group>
-                <group><field name="token_valid_until"/></group>
-                <group><field name="no_sales_order_sync"/></group>
-                <group><field name="stock_sync"/></group>
-                <group><field name="sale_prefix"/></group>
-                <group><field name="import_sales_from_date"/></group>
-                <group><field name="import_updated_sales_from_date"/></group>
-                <group><field name="warehouse_id"/></group>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_prod_environment"
+                                attrs="{'invisible': [('prod_environment', '=', False)]}"
+                                class="oe_stat_button"
+                                type="object" icon="fa-play">
+                            <div class="o_stat_info o_field_widget">
+                                <span class="text-success">Production</span>
+                                <span class="o_stat_text">Environment</span>
+                            </div>
+                        </button>
+                        <!-- transfer referenced here due to view inheritance issue in current master (post-saas-16) -->
+                        <button name="toggle_prod_environment"
+                                attrs="{'invisible': [('prod_environment', '=', True)]}"
+                                class="oe_stat_button"
+                                type="object" icon="fa-stop">
+                            <div class="o_stat_info o_field_widget">
+                                <span class="o_warning_text">Test</span>
+                                <span class="o_stat_text">Environment</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title" name="title">
+                        <label for="name" string="Name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Backend name"/>
+                            <field name="prod_environment" invisible="1"/>
+                        </h1>
+                    </div>
+                    <notebook>
+                        <page name="credentials" string="eBay credentials" attrs="{'invisible': [('prod_environment', '=', False)]}">
+
+                            <group name="ebay_credentials">
+
+                                <field name="client_id"/>
+                                <field name="dev_id"/>
+                                <field name="client_secret" password="True"/>
+                                <field name="automatically_get_token"/>
+                                <field name="token" password="True" attrs="{'readonly': [('automatically_get_token', '=', True)]}"/>
+                                <field name="token_valid_until" attrs="{'readonly': [('automatically_get_token', '=', True)]}"/>
+
+                            </group>
+                        </page>
+                        <page name="test_credentials" string="eBay test credentials" attrs="{'invisible': [('prod_environment', '=', True)]}">
+                            <group name="ebay_test_credentials">
+
+                                <field name="client_id_test"/>
+                                <field name="dev_id_test"/>
+                                <field name="client_secret_test" password="True"/>
+                                <field name="automatically_get_test_token"/>
+                                <field name="token_test" password="True" attrs="{'readonly': [('automatically_get_test_token', '=', True)]}"/>
+                                <field name="token_valid_until_test" attrs="{'readonly': [('automatically_get_test_token', '=', True)]}"/>
+
+                            </group>
+                        </page>
+                        <page name="sales" string="Sales configuration">
+                            <group name="sales_configuration">
+
+                                <field name="no_sales_order_sync"/>
+                                <field name="stock_sync"/>
+                                <field name="sale_prefix"/>
+                                <field name="import_sales_from_date"/>
+                                <field name="cancel_order_if_cancelled_on_ebay"/>
+                                <field name="warehouse_id"/>
+
+                            </group>
+                        </page>
+                        <page name="Invoices" string="Invoices configuration">
+                            <group name="invoices_configuration">
+                                <field name="invoice_order_automatically"/>
+                                <field name="journal_id"/>
+                                <field name="days_passed_to_invoice_order"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+
+
             </form>
         </field>
     </record>
@@ -40,7 +106,6 @@
     <record id="action_ebay_backend" model="ir.actions.act_window">
         <field name="name">eBay Backends</field>
         <field name="res_model">ebay.backend</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_ebay_backend_tree"/>
     </record>
